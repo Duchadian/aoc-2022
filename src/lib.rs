@@ -1,3 +1,4 @@
+#![warn(clippy::all, clippy::pedantic)]
 use std::fs;
 
 pub fn advent_1() {
@@ -37,8 +38,8 @@ pub fn advent_2() {
         current += calories;
     }
 
-    calorie_list.sort();
+    calorie_list.sort_unstable();
     let third_last = calorie_list.len().saturating_sub(3);
 
-    println!("{:?}",calorie_list[third_last..].iter().sum::<i32>())
+    println!("{:?}",calorie_list[third_last..].iter().sum::<i32>());
 }
