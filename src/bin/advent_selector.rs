@@ -1,4 +1,4 @@
-use advent_of_code::{advent_1, advent_2};
+use advent_of_code::*;
 use std::env;
 
 macro_rules! dispatch_to {

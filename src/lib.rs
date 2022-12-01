@@ -2,12 +2,12 @@ use std::fs;
 
 pub fn advent_1() {
     let binding = fs::read_to_string("inputs/day_1").expect("Cannot read input file");
-    let input = binding.split("\n");
+    let input = binding.split('\n');
 
     let mut highest : i32 = 0;
     let mut current : i32 = 0;
     for line in input {
-        if line == "" {
+        if line.is_empty(){
             if current > highest {
                 highest = current ;
             }
@@ -23,12 +23,12 @@ pub fn advent_1() {
 
 pub fn advent_2() {
     let binding = fs::read_to_string("inputs/day_1").expect("Cannot read input file");
-    let input = binding.split("\n");
+    let input = binding.split('\n');
 
     let mut calorie_list : Vec<i32> = Vec::new();
     let mut current : i32 = 0;
     for line in input {
-        if line == "" {
+        if line.is_empty(){
             calorie_list.push(current);
             current = 0;
         }
@@ -39,6 +39,6 @@ pub fn advent_2() {
 
     calorie_list.sort();
     let third_last = calorie_list.len().saturating_sub(3);
-    println!("{:?}",calorie_list[third_last..].iter().sum::<i32>())
 
+    println!("{:?}",calorie_list[third_last..].iter().sum::<i32>())
 }
