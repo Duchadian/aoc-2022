@@ -1,5 +1,7 @@
 #![warn(clippy::all, clippy::pedantic)]
 use std::fs;
+use std::collections::HashSet;
+use itertools::Itertools;
 
 pub fn advent_1() {
     let binding = fs::read_to_string("inputs/day_1").expect("Cannot read input file");
@@ -176,4 +178,109 @@ pub fn advent_4() {
 
     println!("{:?}", score)
 
+}
+
+pub fn advent_5() {
+    let binding = fs::read_to_string("inputs/day_3").expect("Cannot read input file");
+    // let binding = "\
+    // vJrwpWtwJgWrhcsFMMfFFhFp
+    // jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+    // PmmdzqPrVvPwwTWBwg
+    // wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+    // ttgJtRGJQctTZtZT
+    // CrZsJsPPZsGzwwsLwLmpwMDw
+    // ".replace("    ", "");
+
+    // let binding = String::from("A Y\nB X\nC Z");
+    let input = binding.split('\n');
+
+    fn split_in_half(s: &str) -> (&str, &str) {
+        let len  = s.clone().len();
+        s.split_at(len/2)
+    }
+    fn compare_parts(comp: (&str, &str)) -> i32{
+        let first : &str = comp.0;
+        let second : &str = comp.1;
+
+        let mut score = 0;
+
+        let a : HashSet<char> = first.chars().collect();
+        let b : HashSet<char> = second.chars().collect();
+
+        for char in a.intersection(&b) {
+            let c = *char as u32;
+            match c {
+                64..=90 => {
+                    score += (c - 38) as i32
+                }
+                97..=122 => {
+                    score += (c - 96) as i32
+                }
+                _ => {
+                    println!("{} {}", char, c);
+                }
+            }
+        }
+        score
+
+    }
+
+    let total : i32 = input.map(split_in_half).map(compare_parts).sum();
+
+    println!("{:?}", total)
+}
+
+pub fn advent_6() {
+    let binding = fs::read_to_string("inputs/day_3").expect("Cannot read input file");
+//     let binding = "\
+//     vJrwpWtwJgWrhcsFMMfFFhFp
+//     jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+//     PmmdzqPrVvPwwTWBwg
+//     wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+//     ttgJtRGJQctTZtZT
+//     CrZsJsPPZsGzwwsLwLmpwMDw
+//     ".replace("    ", "");
+
+    // let binding = String::from("A Y\nB X\nC Z");
+    let input = binding.split('\n');
+
+
+    let mut total = 0;
+    fn compare_elves(comp: (&str, &str, &str)) -> i32{
+        let mut score = 0;
+
+        let a : HashSet<char> = comp.0.chars().collect();
+        let b : HashSet<char> = comp.1.chars().collect();
+        let c : HashSet<char> = comp.2.chars().collect();
+
+        for char in a.intersection(&b) {
+            if c.contains(char) {
+                let c = *char as u32;
+                match c {
+                    64..=90 => {
+                        score += (c - 38) as i32
+                    }
+                    97..=122 => {
+                        score += (c - 96) as i32
+                    }
+                    _ => {
+                        println!("{} {}", char, c);
+                    }
+                }
+            }
+        }
+        score
+
+    }
+
+    for group in input.collect::<Vec<&str>>().chunks(3) {
+        if group.clone().len() >= 3 {
+            let a = group[0];
+            let b = group[1];
+            let c = group[2];
+            total += compare_elves((a, b, c));
+        }
+    }
+
+    println!("{:?}", total);
 }

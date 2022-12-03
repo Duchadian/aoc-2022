@@ -14,3 +14,4 @@ name = "advent_of_code"
 path = "src/bin/advent_selector.rs"
 
 [dependencies]
+itertools = "0.10.5"
