@@ -1,6 +1,8 @@
 #![warn(clippy::all, clippy::pedantic)]
 use std::fs;
 use std::collections::HashSet;
+use std::ops::{Index, Range};
+use std::str::{FromStr, Split};
 use itertools::Itertools;
 
 pub fn advent_1() {
@@ -191,7 +193,6 @@ pub fn advent_5() {
     // CrZsJsPPZsGzwwsLwLmpwMDw
     // ".replace("    ", "");
 
-    // let binding = String::from("A Y\nB X\nC Z");
     let input = binding.split('\n');
 
     fn split_in_half(s: &str) -> (&str, &str) {
@@ -241,7 +242,6 @@ pub fn advent_6() {
 //     CrZsJsPPZsGzwwsLwLmpwMDw
 //     ".replace("    ", "");
 
-    // let binding = String::from("A Y\nB X\nC Z");
     let input = binding.split('\n');
 
 
@@ -283,4 +283,146 @@ pub fn advent_6() {
     }
 
     println!("{:?}", total);
+}
+
+pub fn advent_7() {
+    let binding = fs::read_to_string("inputs/day_4").expect("Cannot read input file");
+    // let binding = "\
+    // 2-4,6-8
+    // 2-3,4-5
+    // 5-7,7-9
+    // 2-8,3-7
+    // 6-6,4-6
+    // 2-6,4-8".replace("    ", "");
+
+    let input = binding.split('\n');
+
+    fn string_to_range(s: &str) -> Vec<i32> {
+        let s: Vec<i32> = s.clone().split('-').map(|x| x.parse::<i32>().unwrap()).collect();
+        return s
+    }
+
+    #[derive(Debug, Clone)]
+    struct RangeComparison {
+        elf1 : Range<i32>,
+        elf2 : Range<i32>
+    }
+
+    impl RangeComparison {
+        fn contains_another(&self) -> bool {
+            let elf1 = &self.elf1;
+            let elf2 = &self.elf2;
+
+            let mut contains = false;
+            if (elf1.start >= elf2.start) && (elf1.end <= elf2.end){
+                contains = true
+            }
+
+            if (elf2.start >= elf1.start) && (elf2.end <= elf1.end){
+                contains = true
+            }
+
+            return contains
+        }
+    }
+
+    impl FromStr for RangeComparison {
+        type Err = ();
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            if !s.is_empty() {
+                let elves: Vec<Vec<i32>> = s.split(',').map(string_to_range).collect();
+
+                return Ok(RangeComparison{
+                    elf1: (elves[0][0]..elves[0][1]),
+                    elf2: (elves[1][0]..elves[1][1]),
+                })
+            }
+
+            return Err(());
+        }
+    }
+
+    let mut coll: Vec<RangeComparison> = Vec::new();
+    let mut contains : Vec<bool> = Vec::new();
+    for line in input {
+        let comp = RangeComparison::from_str(line);
+        if comp.is_ok() {
+            coll.push(comp.clone().unwrap());
+            contains.push(comp.clone().unwrap().contains_another());
+
+            println!("{:?}, {:?}", comp.clone(), comp.clone().unwrap().contains_another());
+        }
+    }
+
+    println!("{}", contains.into_iter().filter(|b| *b).count());
+}
+
+pub fn advent_8() {
+    let binding = fs::read_to_string("inputs/day_4").expect("Cannot read input file");
+    // let binding = "\
+    // 2-4,6-8
+    // 2-3,4-5
+    // 5-7,7-9
+    // 2-8,3-7
+    // 6-6,4-6
+    // 2-6,4-8".replace("    ", "");
+
+    let input = binding.split('\n');
+
+    fn string_to_range(s: &str) -> Vec<i32> {
+        let s: Vec<i32> = s.clone().split('-').map(|x| x.parse::<i32>().unwrap()).collect();
+        return s
+    }
+
+    #[derive(Debug, Clone)]
+    struct RangeComparison {
+        elf1 : Range<i32>,
+        elf2 : Range<i32>
+    }
+
+    impl RangeComparison {
+        fn overlap(&self) -> bool {
+            let elf1 = &self.elf1;
+            let elf2 = &self.elf2;
+
+            let mut contains = false;
+
+            if (elf1.end >= elf2.start) && (elf1.start <= elf2.end){
+                contains = true
+            }
+
+            return contains
+
+        }
+    }
+
+    impl FromStr for RangeComparison {
+        type Err = ();
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            if !s.is_empty() {
+                let elves: Vec<Vec<i32>> = s.split(',').map(string_to_range).collect();
+
+                return Ok(RangeComparison{
+                    elf1: (elves[0][0]..elves[0][1]),
+                    elf2: (elves[1][0]..elves[1][1]),
+                })
+            }
+
+            return Err(());
+        }
+    }
+
+    let mut coll: Vec<RangeComparison> = Vec::new();
+    let mut contains : Vec<bool> = Vec::new();
+    for line in input {
+        let comp = RangeComparison::from_str(line);
+        if comp.is_ok() {
+            coll.push(comp.clone().unwrap());
+            contains.push(comp.clone().unwrap().overlap());
+        }
+    }
+
+    println!("{}", contains.into_iter().filter(|b| *b).count());
 }

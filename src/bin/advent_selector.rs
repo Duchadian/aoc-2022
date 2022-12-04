@@ -19,7 +19,9 @@ fn dispatch(s: &str) {
         advent_3,
         advent_4,
         advent_5,
-        advent_6
+        advent_6,
+        advent_7,
+        advent_8
     });
 }
 
